@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Mi jardín">
+<meta name="theme-color" content="#EAF1EC">
+<title>Mi jardín de hábitos</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Figtree:wght@400;500;600&display=swap');
+
+:root{
+  --fern:#2E4A3C;
+  --fern-soft:#5C7A69;
+  --mist:#EAF1EC;
+  --petal:#FBFCF8;
+  --sage:#7FA38A;
+  --sage-deep:#5E8870;
+  --marigold:#E8B63A;
+  --lav:#A394CF;
+  --sky:#CFE5E8;
+  --line:rgba(46,74,60,.12);
+  --serif:'Newsreader',Georgia,'Times New Roman',serif;
+  --sans:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{background:var(--mist)}
+body{
+  font-family:var(--sans);color:var(--fern);background:var(--mist);
+  max-width:440px;margin:0 auto;min-height:100vh;
+  padding:calc(env(safe-area-inset-top,0px) + 22px) 18px calc(env(safe-area-inset-bottom,0px) + 40px);
+}
+
+/* ---------- Encabezado ---------- */
+.date{font-size:14px;color:var(--fern-soft);text-transform:capitalize;font-weight:500}
+h1{font-family:var(--serif);font-weight:400;font-size:34px;line-height:1.1;letter-spacing:-.01em;margin:4px 0 6px}
+.msg{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--fern-soft);min-height:24px}
+
+/* ---------- Jardín ---------- */
+.garden{
+  --p:0;
+  position:relative;margin:18px 0 14px;border-radius:26px;overflow:hidden;
+  background:linear-gradient(180deg,#C9DFE0 0%,#E4EFE6 62%,#EEF3E2 100%);
+  padding:56px 8px 14px;
+  box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 10px 28px -14px rgba(46,74,60,.35);
+}
+.sun{
+  position:absolute;top:16px;right:20px;width:44px;height:44px;border-radius:50%;
+  background:radial-gradient(circle at 40% 40%,#FFF1BD,#F2B632);
+  opacity:calc(.22 + var(--p) * .78);
+  box-shadow:0 0 calc(var(--p) * 44px) calc(var(--p) * 10px) rgba(242,182,50,.45);
+  transition:opacity .8s,box-shadow .8s;
+}
+.cloud{position:absolute;top:22px;left:-40px;width:70px;height:20px;border-radius:20px;background:rgba(255,255,255,.7);filter:blur(1px);animation:drift 60s linear infinite}
+.cloud::after{content:"";position:absolute;left:14px;top:-9px;width:30px;height:20px;border-radius:50%;background:inherit}
+@keyframes drift{to{transform:translateX(520px)}}
+.ground{
+  position:absolute;left:-10%;right:-10%;bottom:0;height:46%;
+  background:linear-gradient(180deg,#A9C79A 0%,#8DB180 55%,#7BA06F 100%);
+  border-radius:50% 50% 0 0 / 28% 28% 0 0;
+}
+.beds{position:relative;display:grid;grid-template-columns:repeat(7,1fr);row-gap:0;z-index:2}
+.plant{position:relative;aspect-ratio:40/70;margin-top:-6px}
+.plant svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.plant svg.full{display:none}
+.plant.done svg.full{display:block;transform-origin:50% 100%;animation:sway 5s ease-in-out infinite;animation-delay:var(--d,0s)}
+.plant.done svg.sprout{display:none}
+@keyframes sway{0%,100%{transform:rotate(-1.6deg)}50%{transform:rotate(1.6deg)}}
+
+.stem,.leaf,.bloom{transform-box:fill-box}
+.stem{transform-origin:50% 100%}
+.leaf{transform-origin:0 100%}
+.leaf.r{transform-origin:100% 100%}
+.bloom{transform-origin:50% 50%}
+.plant.done:not(.still) .stem{animation:grow .8s cubic-bezier(.2,.8,.3,1) both}
+.plant.done:not(.still) .leaf{animation:unfurl .5s .35s ease-out both}
+.plant.done:not(.still) .bloom{animation:pop .6s .6s cubic-bezier(.34,1.7,.5,1) both}
+@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes unfurl{from{transform:scale(0)}to{transform:scale(1)}}
+@keyframes pop{from{transform:scale(0) rotate(-40deg)}to{transform:scale(1) rotate(0)}}
+
+.bf{position:absolute;z-index:3;opacity:0;pointer-events:none;width:24px}
+.garden.complete .bf{opacity:1;animation:fly 11s ease-in-out infinite}
+.bf.b2{animation-delay:-5s;top:42%}
+.bf .wing{transform-box:fill-box;transform-origin:50% 50%;animation:flap .28s ease-in-out infinite alternate}
+@keyframes flap{from{transform:scaleX(1)}to{transform:scaleX(.45)}}
+@keyframes fly{
+  0%{transform:translate(0,0)}25%{transform:translate(110px,-34px)}
+  50%{transform:translate(230px,6px)}75%{transform:translate(120px,-52px)}100%{transform:translate(0,0)}
+}
+
+/* ---------- Estadísticas ---------- */
+.stats{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.count{font-family:var(--serif);font-size:38px;line-height:1;white-space:nowrap}
+.count small{font-size:20px;color:var(--fern-soft)}
+.bar{flex:1;height:8px;background:rgba(46,74,60,.1);border-radius:8px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,var(--sage),var(--marigold));transition:width .6s cubic-bezier(.2,.8,.3,1)}
+
+.week{display:flex;align-items:center;justify-content:space-between;background:var(--petal);border:1px solid var(--line);border-radius:18px;padding:12px 14px;margin-bottom:12px}
+.streak{font-size:13px;color:var(--fern-soft);line-height:1.3}
+.streak b{display:block;font-family:var(--serif);font-weight:500;font-size:22px;color:var(--fern)}
+.dots{display:flex;gap:7px}
+.dot{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;color:var(--fern-soft)}
+.dot i{width:16px;height:16px;border-radius:50%;background:var(--sky);opacity:.55}
+.dot i.part{background:var(--sage);opacity:1}
+.dot i.full{background:var(--marigold);opacity:1}
+.dot.today span{color:var(--fern);font-weight:600}
+
+.gym{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--petal);border:1px solid var(--line);border-radius:18px;padding:13px 16px;margin-bottom:18px;cursor:pointer;user-select:none}
+.gym span{font-size:15px;font-weight:500}
+.gym em{display:block;font-style:normal;font-size:12px;color:var(--fern-soft);font-weight:400;margin-top:2px}
+.switch{position:relative;width:46px;height:28px;border-radius:28px;background:rgba(46,74,60,.18);transition:background .25s;flex-shrink:0}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .25s}
+.gym.on .switch{background:var(--sage-deep)}
+.gym.on .switch::after{transform:translateX(18px)}
+
+/* ---------- Listas ---------- */
+.group{margin-bottom:20px}
+.group h2{font-family:var(--serif);font-weight:500;font-size:21px;margin:0 2px 8px;display:flex;align-items:baseline;justify-content:space-between}
+.group h2 small{font-family:var(--sans);font-size:12px;color:var(--fern-soft);font-weight:500}
+.card{background:var(--petal);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.item{width:100%;display:flex;align-items:center;gap:14px;padding:14px 16px;background:none;border:0;border-top:1px solid var(--line);font:inherit;color:inherit;text-align:left;cursor:pointer;transition:background .15s}
+.item:first-child{border-top:0}
+.item:active{background:rgba(127,163,138,.12)}
+.item:focus-visible{outline:2px solid var(--sage-deep);outline-offset:-2px}
+.chk{width:26px;height:26px;border-radius:50%;border:1.8px solid var(--sage);flex-shrink:0;display:grid;place-items:center;transition:background .2s,border-color .2s,transform .2s}
+.chk svg{width:14px;height:14px;stroke:#fff;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:20;stroke-dashoffset:20;transition:stroke-dashoffset .3s .08s}
+.label{flex:1;font-size:16px;line-height:1.3;transition:color .2s}
+.item.done .chk{background:var(--sage-deep);border-color:var(--sage-deep);transform:scale(1.05)}
+.item.done .chk svg{stroke-dashoffset:0}
+.item.done .label{color:var(--fern-soft);text-decoration:line-through;text-decoration-color:rgba(46,74,60,.35)}
+
+.reset{display:block;margin:6px auto 0;background:none;border:0;font:inherit;font-size:13px;color:var(--fern-soft);text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:8px}
+
+.toast{
+  position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 26px);transform:translate(-50%,40px);
+  background:var(--fern);color:#fff;padding:14px 22px;border-radius:40px;font-family:var(--serif);font-size:18px;
+  opacity:0;pointer-events:none;transition:all .5s cubic-bezier(.2,.8,.3,1);z-index:50;white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <p class="date" id="date"></p>
+  <h1>Mi jardín de hábitos</h1>
+  <p class="msg" id="msg"></p>
+</header>
+
+<section class="garden" id="garden" aria-label="Jardín del día">
+  <div class="sun"></div>
+  <div class="cloud"></div>
+  <div class="ground"></div>
+  <div class="beds" id="beds"></div>
+  <svg class="bf b1" style="left:8%;top:30%" viewBox="0 0 24 20" aria-hidden="true"><g class="wing"><path d="M12 10C6 0 0 3 2 9c1 4 6 4 10 1Z" fill="#E8B63A"/><path d="M12 10c6-10 12-7 10-1-1 4-6 4-10 1Z" fill="#E8B63A"/></g><path d="M12 6v9" stroke="#2E4A3C" stroke-width="1.2"/></svg>
+  <svg class="bf b2" style="left:34%;top:20%" viewBox="0 0 24 20" aria-hidden="true"><g class="wing"><path d="M12 10C6 0 0 3 2 9c1 4 6 4 10 1Z" fill="#A394CF"/><path d="M12 10c6-10 12-7 10-1-1 4-6 4-10 1Z" fill="#A394CF"/></g><path d="M12 6v9" stroke="#2E4A3C" stroke-width="1.2"/></svg>
+</section>
+
+<div class="stats">
+  <div class="count"><span id="cnt">0</span><small>/<span id="tot">0</span></small></div>
+  <div class="bar"><i id="barfill"></i></div>
+</div>
+
+<div class="week">
+  <div class="streak"><b id="streak">0</b>días seguidos<br>con jardín completo</div>
+  <div class="dots" id="dots"></div>
+</div>
+
+<div class="gym" id="gymtoggle" role="switch" aria-checked="false" tabindex="0">
+  <span>Hoy es día de gym<em>Suma clorofila en el agua</em></span>
+  <div class="switch"></div>
+</div>
+
+<main id="lists"></main>
+
+<button class="reset" id="resetbtn">Reiniciar el día</button>
+<div class="toast" id="toast">¡Jardín completo! Hoy floreciste</div>
+
+<script>
+/* ============ HÁBITOS (edítalos aquí) ============ */
+const SECTIONS = {
+  am:  {t:'Al despertar'},
+  day: {t:'Durante el día'},
+  pm:  {t:'Por la noche'}
+};
+const HABITS = [
+  {id:'cama',      s:'am',  t:'Tender la cama'},
+  {id:'agua_am',   s:'am',  t:'Tomar agua'},
+  {id:'kefir',     s:'am',  t:'Shot de kéfir + prebiótico'},
+  {id:'sol',       s:'am',  t:'Tomar sol 5 min'},
+  {id:'dientes_am',s:'am',  t:'Lavarme los dientes'},
+  {id:'skin_am',   s:'am',  t:'Skincare y vitaminas'},
+  {id:'arreglo',   s:'am',  t:'Oler rico y arreglarme'},
+
+  {id:'ejercicio', s:'day', t:'Ejercicio (gym o correr)'},
+  {id:'clorofila', s:'day', t:'Clorofila en el agua', gym:true},
+  {id:'pasos',     s:'day', t:'Caminar / 10k pasos'},
+  {id:'comer',     s:'day', t:'Comer saludable (2 de 3 comidas)'},
+  {id:'agua_dia',  s:'day', t:'Tomar 2–3 litros de agua'},
+  {id:'negocio',   s:'day', t:'Avanzar un negocio: una tarea concreta'},
+  {id:'finanzas',  s:'day', t:'Llenar mis finanzas del día'},
+  {id:'leer',      s:'day', t:'Leer 15 min'},
+  {id:'cuarto',    s:'day', t:'Cuarto limpio'},
+  {id:'camioneta', s:'day', t:'Camioneta limpia'},
+
+  {id:'gratitud',  s:'pm',  t:'1 línea de gratitud'},
+  {id:'celular',   s:'pm',  t:'Celular fuera de la cama'},
+  {id:'skin_pm',   s:'pm',  t:'Dientes y skincare de noche'},
+  {id:'dormir',    s:'pm',  t:'Dormir a hora fija'}
+];
+
+/* ============ ALMACENAMIENTO ============ */
+const K='jardin_hoy_v1', KH='jardin_historial_v1';
+const $=id=>document.getElementById(id);
+const fmt=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const today=()=>fmt(new Date());
+let state, hist={};
+
+function load(){
+  try{state=JSON.parse(localStorage.getItem(K));}catch(e){state=null;}
+  try{hist=JSON.parse(localStorage.getItem(KH))||{};}catch(e){hist={};}
+  if(!state||typeof state!=='object'||!state.checked) state={date:today(),checked:{},gym:false};
+  if(state.date!==today()) state={date:today(),checked:{},gym:false};
+}
+function save(){
+  hist[state.date]={done:count(),total:visible().length};
+  const keys=Object.keys(hist).sort();
+  while(keys.length>60) delete hist[keys.shift()];
+  try{localStorage.setItem(K,JSON.stringify(state));localStorage.setItem(KH,JSON.stringify(hist));}catch(e){}
+}
+const visible=()=>HABITS.filter(h=>!h.gym||state.gym);
+const count=()=>visible().filter(h=>state.checked[h.id]).length;
+
+/* ============ FLORES ============ */
+const GREEN='#5E8870', LEAF='#7FA38A';
+const rot=(n,a,w)=>Array.from({length:n},(_,i)=>`<ellipse cx="20" cy="14" rx="${w[0]}" ry="${w[1]}" transform="rotate(${i*a} 20 24)"`).map(e=>e);
+function bloom(type){
+  switch(type%6){
+    case 0: // margarita
+      return rot(8,45,[3.1,7]).map(e=>e+' fill="#FFFEF8" stroke="#E4DCC6" stroke-width=".5"/>').join('')+'<circle cx="20" cy="24" r="4.2" fill="#E8B63A"/>';
+    case 1: // tulipán
+      return '<ellipse cx="20" cy="22" rx="5.2" ry="10" fill="#E27D60"/><ellipse cx="20" cy="22" rx="4.6" ry="9.6" transform="rotate(-20 20 28)" fill="#EC9A82"/><ellipse cx="20" cy="22" rx="4.6" ry="9.6" transform="rotate(20 20 28)" fill="#EC9A82"/><ellipse cx="20" cy="22" rx="4" ry="9" fill="#E27D60"/>';
+    case 2: // girasol
+      return rot(12,30,[2.6,7.4]).map(e=>e+' fill="#F2B632"/>').join('')+'<circle cx="20" cy="24" r="5.4" fill="#7A4B2A"/><circle cx="20" cy="24" r="2.4" fill="#5A361D"/>';
+    case 3: // lavanda
+      return [[20,9],[17.4,14],[22.6,14],[17,19.5],[23,19.5],[17.4,25],[22.6,25],[20,29]].map(p=>`<ellipse cx="${p[0]}" cy="${p[1]}" rx="2.7" ry="3.5" fill="#A394CF"/>`).join('');
+    case 4: // amapola
+      return Array.from({length:5},(_,i)=>`<circle cx="20" cy="17" r="6" transform="rotate(${i*72} 20 24)" fill="#E5533D" opacity=".95"/>`).join('')+'<circle cx="20" cy="24" r="2.8" fill="#34262A"/>';
+    default: // cosmos
+      return rot(8,45,[3.6,6.6]).map(e=>e+' fill="#A9C7EA"/>').join('')+'<circle cx="20" cy="24" r="3.2" fill="#F2C94C"/>';
+  }
+}
+function flowerSVG(i){
+  return `<svg class="full" viewBox="0 0 40 70" aria-hidden="true">
+    <path class="stem" d="M20 68C20 56 20 42 20 29" stroke="${GREEN}" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <path class="leaf" d="M20 54C12 53 8 47 8 42c7 0 11 4 12 12Z" fill="${LEAF}"/>
+    <path class="leaf r" d="M20 47c8-1 12-7 12-12-7 0-11 4-12 12Z" fill="${GREEN}"/>
+    <g class="bloom">${bloom(i)}</g>
+  </svg>`;
+}
+const sproutSVG=()=>`<svg class="sprout" viewBox="0 0 40 70" aria-hidden="true">
+  <ellipse cx="20" cy="67.5" rx="8" ry="2.6" fill="#8C6F4E" opacity=".45"/>
+  <path d="M20 67C20 63 20 60 20 57" stroke="${LEAF}" stroke-width="2" fill="none" stroke-linecap="round" opacity=".85"/>
+  <path d="M20 59c-5 0-8-3-8-6 5 0 8 2 8 6Z" fill="${LEAF}" opacity=".85"/>
+  <path d="M20 58c5 0 8-3 8-6-5 0-8 2-8 6Z" fill="${LEAF}" opacity=".85"/>
+</svg>`;
+
+/* ============ RENDER ============ */
+function buildGarden(){
+  const el=$('beds'); el.innerHTML='';
+  visible().forEach((h,i)=>{
+    const d=document.createElement('div');
+    const done=!!state.checked[h.id];
+    d.className='plant'+(done?' done still':'');
+    d.id='pl-'+h.id;
+    d.style.setProperty('--d',((i*0.55)%4).toFixed(2)+'s');
+    d.innerHTML=sproutSVG()+flowerSVG(i);
+    el.appendChild(d);
+  });
+}
+function buildLists(){
+  const root=$('lists'); root.innerHTML='';
+  Object.keys(SECTIONS).forEach(sec=>{
+    const items=visible().filter(h=>h.s===sec);
+    const g=document.createElement('section'); g.className='group';
+    g.innerHTML=`<h2>${SECTIONS[sec].t}<small data-sec="${sec}"></small></h2><div class="card"></div>`;
+    const card=g.querySelector('.card');
+    items.forEach(h=>{
+      const b=document.createElement('button');
+      b.className='item'+(state.checked[h.id]?' done':'');
+      b.id='it-'+h.id; b.type='button';
+      b.setAttribute('aria-pressed',!!state.checked[h.id]);
+      b.innerHTML=`<span class="chk"><svg viewBox="0 0 16 16"><path d="M3 8.5l3.2 3.2L13 5"/></svg></span><span class="label">${h.t}</span>`;
+      b.addEventListener('click',()=>toggle(h.id));
+      card.appendChild(b);
+    });
+    root.appendChild(g);
+  });
+}
+function messageFor(p,all){
+  if(all) return 'Tu jardín está en flor. Lo lograste hoy.';
+  if(p===0) return 'Planta tu primera semilla del día.';
+  if(p<0.34) return 'Tu jardín empieza a despertar.';
+  if(p<0.67) return 'Va tomando color, sigue así.';
+  return 'Ya casi: unas flores más y queda completo.';
+}
+function streakCount(){
+  let n=0; const d=new Date();
+  const full=k=>hist[k]&&hist[k].total>0&&hist[k].done===hist[k].total;
+  if(full(fmt(d))) n=1;
+  for(let i=1;i<60;i++){
+    const x=new Date(); x.setDate(x.getDate()-i);
+    if(full(fmt(x))) n++; else break;
+  }
+  return n;
+}
+function buildWeek(){
+  const L=['D','L','M','M','J','V','S'];
+  let html='';
+  for(let i=6;i>=0;i--){
+    const x=new Date(); x.setDate(x.getDate()-i);
+    const e=hist[fmt(x)];
+    const cls=e&&e.total>0&&e.done===e.total?'full':(e&&e.done>0?'part':'');
+    html+=`<div class="dot${i===0?' today':''}"><i class="${cls}"></i><span>${L[x.getDay()]}</span></div>`;
+  }
+  $('dots').innerHTML=html;
+  $('streak').textContent=streakCount();
+}
+function updateStats(){
+  const tot=visible().length, n=count(), p=tot?n/tot:0, all=tot>0&&n===tot;
+  $('cnt').textContent=n; $('tot').textContent=tot;
+  $('barfill').style.width=(p*100)+'%';
+  $('msg').textContent=messageFor(p,all);
+  const g=$('garden'); g.style.setProperty('--p',p.toFixed(3)); g.classList.toggle('complete',all);
+  Object.keys(SECTIONS).forEach(sec=>{
+    const items=visible().filter(h=>h.s===sec);
+    const s=document.querySelector(`small[data-sec="${sec}"]`);
+    if(s) s.textContent=items.filter(h=>state.checked[h.id]).length+' de '+items.length;
+  });
+  buildWeek();
+}
+function renderAll(){
+  $('date').textContent=new Date().toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long'});
+  const gt=$('gymtoggle'); gt.classList.toggle('on',!!state.gym); gt.setAttribute('aria-checked',!!state.gym);
+  buildGarden(); buildLists(); updateStats();
+}
+
+/* ============ INTERACCIÓN ============ */
+function toggle(id){
+  const was=count()===visible().length;
+  state.checked[id]=!state.checked[id];
+  save();
+  const on=state.checked[id];
+  const pl=$('pl-'+id), it=$('it-'+id);
+  if(pl){ if(on){pl.classList.remove('still');pl.classList.add('done');} else pl.classList.remove('done','still'); }
+  if(it){ it.classList.toggle('done',on); it.setAttribute('aria-pressed',on); }
+  if(navigator.vibrate) navigator.vibrate(on?12:6);
+  updateStats();
+  if(!was && count()===visible().length) celebrate();
+}
+function celebrate(){
+  const t=$('toast'); t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3800);
+}
+function setGym(on){
+  state.gym=on;
+  if(!on) delete state.checked.clorofila;
+  save(); renderAll();
+}
+$('gymtoggle').addEventListener('click',()=>setGym(!state.gym));
+$('gymtoggle').addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();setGym(!state.gym);}});
+$('resetbtn').addEventListener('click',()=>{
+  if(confirm('¿Reiniciar todos los hábitos de hoy?')){state.checked={};save();renderAll();}
+});
+
+/* Reinicio automático al cambiar de día (también si la pestaña queda abierta) */
+function checkDay(){
+  if(state.date!==today()){ state={date:today(),checked:{},gym:false}; save(); renderAll(); }
+}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkDay();});
+window.addEventListener('focus',checkDay);
+setInterval(checkDay,30000);
+
+load(); save(); renderAll();
+</script>
+</body>
+</html>
